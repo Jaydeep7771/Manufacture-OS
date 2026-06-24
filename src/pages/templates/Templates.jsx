@@ -12,9 +12,8 @@ export default function Templates() {
   const { templates, costs, addTemplate, updateTemplate } = useApp()
   const [expanded, setExpanded] = useState(null)
   const [addModal, setAddModal] = useState(false)
-  const [form, setForm] = useState({ name: '', description: '', rawMaterialId: 'rm1', components: [] })
-
   const rawMaterials = costs.filter((c) => c.category === 'raw_material')
+  const [form, setForm] = useState({ name: '', description: '', rawMaterialId: rawMaterials[0]?.id || '', components: [] })
   const components = costs.filter((c) => c.category === 'component' || c.category === 'service')
 
   const getCostName = (id) => costs.find((c) => c.id === id)?.name || id
@@ -46,7 +45,7 @@ export default function Templates() {
       rawMaterial: { costId: form.rawMaterialId, name: rm?.name || '', type: 'weight' },
       components: form.components.map((c) => ({ ...c, name: getCostName(c.costId), qty: Number(c.qty) })),
     })
-    setForm({ name: '', description: '', rawMaterialId: 'rm1', components: [] })
+    setForm({ name: '', description: '', rawMaterialId: rawMaterials[0]?.id || '', components: [] })
     setAddModal(false)
   }
 

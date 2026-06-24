@@ -29,11 +29,13 @@ export default function Simulator() {
   const reset = () => setOverrides({})
   const hasChanges = Object.keys(overrides).length > 0
 
+  const brassCost = costs.find(c => c.category === 'raw_material' && c.name.toLowerCase().includes('brass') && !c.name.toLowerCase().includes('scrap'))
+  const brassId = brassCost?.id
   const scenarioPresets = [
-    { label: 'Brass +10%', changes: { rm1: Math.round(costs.find(c=>c.id==='rm1')?.cost * 1.10 || 0) } },
-    { label: 'Brass +20%', changes: { rm1: Math.round(costs.find(c=>c.id==='rm1')?.cost * 1.20 || 0) } },
+    { label: 'Brass +10%', changes: brassId ? { [brassId]: Math.round(brassCost.cost * 1.10) } : {} },
+    { label: 'Brass +20%', changes: brassId ? { [brassId]: Math.round(brassCost.cost * 1.20) } : {} },
     { label: 'All costs +5%', changes: Object.fromEntries(costs.map(c => [c.id, Math.round(c.cost * 1.05)])) },
-    { label: 'Brass -5%', changes: { rm1: Math.round(costs.find(c=>c.id==='rm1')?.cost * 0.95 || 0) } },
+    { label: 'Brass -5%',  changes: brassId ? { [brassId]: Math.round(brassCost.cost * 0.95) } : {} },
   ]
 
   const affectedCount = productComparison.filter((p) => Math.abs(p.marginDelta) > 0.01).length

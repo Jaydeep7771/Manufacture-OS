@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Package, TrendingDown, AlertTriangle, DollarSign,
+  Package, TrendingDown, /* AlertTriangle, */ DollarSign,
   ArrowRight, Target, Flame,
 } from 'lucide-react'
 import {
@@ -16,7 +16,7 @@ import Card, { CardHeader } from '../../components/ui/Card'
 import Badge from '../../components/ui/Badge'
 
 export default function Dashboard() {
-  const { products, templates, costs, alerts } = useApp()
+  const { products, templates, costs, /* alerts */ } = useApp()
 
   const productMetrics = useMemo(() => {
     return products.map((p) => {
@@ -28,14 +28,13 @@ export default function Dashboard() {
   const avgMargin = (productMetrics.reduce((s, p) => s + p.margin, 0) / productMetrics.length).toFixed(1)
   const topProduct = productMetrics[0]
   const bottomProduct = productMetrics[productMetrics.length - 1]
-  const belowThreshold = productMetrics.filter((p) => p.margin < 20).length
 
-  const brassRate = costs.find((c) => c.id === 'rm1')?.cost || 0
-  const unreadAlerts = alerts.filter((a) => !a.isRead)
+  const brassRate = costs.find((c) => c.category === 'raw_material' && c.name.toLowerCase().includes('brass') && !c.name.toLowerCase().includes('scrap'))?.cost || 0
+  // const unreadAlerts = alerts.filter((a) => !a.isRead)
 
   return (
     <div className="space-y-6">
-      {/* Alert Banner */}
+      {/* Alert Banner — commented out (Alerts module disabled)
       {unreadAlerts.length > 0 && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
           <AlertTriangle size={18} className="text-amber-600 shrink-0" />
@@ -48,9 +47,10 @@ export default function Dashboard() {
           </Link>
         </div>
       )}
+      */}
 
       {/* KPI Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard
           title="Total Products"
           value={products.length}
@@ -76,15 +76,6 @@ export default function Dashboard() {
           icon={DollarSign}
           iconColor="amber"
           trend={7.7}
-          trendLabel="vs last month"
-        />
-        <StatCard
-          title="Need Price Revision"
-          value={belowThreshold}
-          subtitle="Products below 20% margin"
-          icon={AlertTriangle}
-          iconColor="red"
-          trend={-3}
           trendLabel="vs last month"
         />
       </div>
@@ -143,29 +134,29 @@ export default function Dashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
-                    <th className="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Product</th>
-                    <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Cost</th>
-                    <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Price</th>
-                    <th className="text-right px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Margin</th>
-                    <th className="text-right px-5 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Profit</th>
+                  <tr className="bg-slate-50/80 border-b border-slate-100">
+                    <th className="text-left px-5 py-3.5 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Product</th>
+                    <th className="text-right px-4 py-3.5 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Cost</th>
+                    <th className="text-right px-4 py-3.5 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Price</th>
+                    <th className="text-right px-4 py-3.5 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Margin</th>
+                    <th className="text-right px-5 py-3.5 text-[11px] font-bold text-slate-400 uppercase tracking-widest">Profit</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
                   {productMetrics.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                    <tr key={p.id} className="hover:bg-blue-50/30 transition-colors group">
                       <td className="px-5 py-3.5">
-                        <p className="font-medium text-slate-800">{p.name}</p>
-                        <p className="text-xs text-slate-400">{p.sku} · {p.templateName}</p>
+                        <p className="font-semibold text-slate-800 text-sm">{p.name}</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5 font-medium">{p.sku} · {p.templateName}</p>
                       </td>
-                      <td className="px-4 py-3.5 text-right text-slate-700">{formatCurrency(p.totalCost)}</td>
-                      <td className="px-4 py-3.5 text-right text-slate-700">{formatCurrency(p.sellingPrice)}</td>
+                      <td className="px-4 py-3.5 text-right text-slate-600 font-medium tabular-nums">{formatCurrency(p.totalCost)}</td>
+                      <td className="px-4 py-3.5 text-right text-slate-600 font-medium tabular-nums">{formatCurrency(p.sellingPrice)}</td>
                       <td className="px-4 py-3.5 text-right">
                         <Badge variant={p.margin >= 30 ? 'success' : p.margin >= 20 ? 'info' : p.margin >= 10 ? 'warning' : 'danger'}>
                           {p.margin.toFixed(1)}%
                         </Badge>
                       </td>
-                      <td className="px-5 py-3.5 text-right font-semibold text-slate-700">{formatCurrency(p.profit)}</td>
+                      <td className="px-5 py-3.5 text-right font-bold text-slate-800 tabular-nums">{formatCurrency(p.profit)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -199,7 +190,7 @@ export default function Dashboard() {
             </div>
           </Card>
 
-          {/* Recent Alerts */}
+          {/* Recent Alerts — disabled
           <Card>
             <CardHeader
               title="Recent Alerts"
@@ -219,6 +210,7 @@ export default function Dashboard() {
               ))}
             </div>
           </Card>
+          */}
         </div>
       </div>
     </div>

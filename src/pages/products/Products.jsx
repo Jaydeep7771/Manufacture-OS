@@ -220,7 +220,7 @@ export default function Products() {
               <p className="text-sm font-semibold text-slate-700 mb-3">Cost Breakdown</p>
               <div className="space-y-1.5">
                 <div className="flex justify-between py-2 border-b border-slate-100">
-                  <span className="text-sm text-slate-600">Brass ({detailModal.brassWeight}kg × {formatCurrency(costs.find(c=>c.id==='rm1')?.cost||0)}/kg)</span>
+                  <span className="text-sm text-slate-600">Brass ({detailModal.brassWeight}kg × {formatCurrency(costs.find(c=>c.category==='raw_material'&&c.name.toLowerCase().includes('brass')&&!c.name.toLowerCase().includes('scrap'))?.cost||0)}/kg)</span>
                   <span className="text-sm font-medium text-slate-800">{formatCurrency(detailModal.rawMaterialCost)}</span>
                 </div>
                 {detailModal.componentCosts?.map((c, i) => (

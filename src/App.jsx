@@ -12,7 +12,7 @@ const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'))
 const MasterCosts = lazy(() => import('./pages/costs/MasterCosts'))
 const Templates = lazy(() => import('./pages/templates/Templates'))
 const Products = lazy(() => import('./pages/products/Products'))
-const Alerts = lazy(() => import('./pages/alerts/Alerts'))
+// const Alerts = lazy(() => import('./pages/alerts/Alerts'))
 const Simulator = lazy(() => import('./pages/simulator/Simulator'))
 const Compare = lazy(() => import('./pages/compare/Compare'))
 const Analytics = lazy(() => import('./pages/analytics/Analytics'))
@@ -60,7 +60,7 @@ export default function App() {
               <Route path="costs" element={<MasterCosts />} />
               <Route path="templates" element={<Templates />} />
               <Route path="products" element={<Products />} />
-              <Route path="alerts" element={<Alerts />} />
+              {/* <Route path="alerts" element={<Alerts />} /> */}
               <Route path="simulator" element={<Simulator />} />
               <Route path="compare" element={<Compare />} />
               <Route path="analytics" element={<Analytics />} />
